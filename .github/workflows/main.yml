@@ -1,0 +1,29 @@
+name: Docker Build and Push for Java App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Load JDK
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'adopt'
+        java-version: '11'
+
+    - name: Build Image
+      run: docker build -t naufilmoten/maven-java-monitoring-example .
+
+    - name: Docker Hub Login
+      run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Push Image to Docker Hub
+      run: docker push naufilmoten/maven-java-monitoring-example
